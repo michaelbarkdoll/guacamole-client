@@ -17,32 +17,13 @@
  * under the License.
  */
 
-package org.apache.guacamole.properties;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.apache.guacamole.GuacamoleException;
-import org.apache.guacamole.GuacamoleServerException;
-
 /**
- * A GuacamoleProperty whose value is a URL.
+ * Controller for the "GUAC_SAML_REDIRECT" field, which redirects
+ * to the provided URI.
  */
-public abstract class UrlGuacamoleProperty implements GuacamoleProperty<URL> {
+angular.module('guacSAML').controller('guacSAMLController', ['$scope','$window',
+    function guacSAMLController($scope,$window) {
 
-    @Override
-    public URL parseValue(String value) throws GuacamoleException {
+    $window.location.href = $scope.field.samlRedirect;
 
-        // If no property provided, return null.
-        if (value == null)
-            return null;
-
-        try {
-            return new URL(value);
-        }
-        catch (MalformedURLException e) {
-            throw new GuacamoleServerException("Failed to parse URL.", e);
-        }
-
-    }
-
-}
+}]);

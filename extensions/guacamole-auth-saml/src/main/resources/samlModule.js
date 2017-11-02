@@ -17,32 +17,12 @@
  * under the License.
  */
 
-package org.apache.guacamole.properties;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.apache.guacamole.GuacamoleException;
-import org.apache.guacamole.GuacamoleServerException;
-
 /**
- * A GuacamoleProperty whose value is a URL.
+ * Module which handles redirecting SSO requests to SAML IdPs.
  */
-public abstract class UrlGuacamoleProperty implements GuacamoleProperty<URL> {
+angular.module('guacSAML', [
+    'form'
+]);
 
-    @Override
-    public URL parseValue(String value) throws GuacamoleException {
-
-        // If no property provided, return null.
-        if (value == null)
-            return null;
-
-        try {
-            return new URL(value);
-        }
-        catch (MalformedURLException e) {
-            throw new GuacamoleServerException("Failed to parse URL.", e);
-        }
-
-    }
-
-}
+// Load the SAML module into the rest of the app.
+angular.module('index').requires.push('guacSAML');

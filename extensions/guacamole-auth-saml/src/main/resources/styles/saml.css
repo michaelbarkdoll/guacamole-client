@@ -17,32 +17,19 @@
  * under the License.
  */
 
-package org.apache.guacamole.properties;
+.saml-field-container {
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: table;
+    background: white;
+}
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import org.apache.guacamole.GuacamoleException;
-import org.apache.guacamole.GuacamoleServerException;
-
-/**
- * A GuacamoleProperty whose value is a URL.
- */
-public abstract class UrlGuacamoleProperty implements GuacamoleProperty<URL> {
-
-    @Override
-    public URL parseValue(String value) throws GuacamoleException {
-
-        // If no property provided, return null.
-        if (value == null)
-            return null;
-
-        try {
-            return new URL(value);
-        }
-        catch (MalformedURLException e) {
-            throw new GuacamoleServerException("Failed to parse URL.", e);
-        }
-
-    }
-
+.saml-field {
+    width: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
 }
