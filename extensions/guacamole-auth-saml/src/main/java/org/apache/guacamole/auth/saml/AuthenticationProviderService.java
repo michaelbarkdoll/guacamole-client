@@ -106,6 +106,19 @@ public class AuthenticationProviderService {
                     // Generate the response object
                     SamlResponse samlResponse = new SamlResponse(samlSettings, httpRequest);
 
+                    if (!samlResponse.validateNumAssertions()) {
+                        logger.warn("SAML response contained other than single assertion.");
+                        logger.debug("validateNumAssertions returned false.");
+                        throw new GuacamoleInvalidCredentialsException("Error during SAML login.",
+                                CredentialsInfo.USERNAME_PASSWORD);
+                    }
+                    if (!samlResponse.validateTimestamps()) {
+                        logger.warn("SAML response timestamps were invalid.");
+                        logger.debug("validateTimestamps returned false.");
+                        throw new GuacamoleInvalidCredentialsException("Error during SAML login.",
+                                CredentialsInfo.USERNAME_PASSWORD);
+                    }
+
                     // Grab the username, and, if present, finish authentication.
                     String username = samlResponse.getNameId().toLowerCase();
                     if (username != null) {
