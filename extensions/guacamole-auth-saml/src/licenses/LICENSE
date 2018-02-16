@@ -247,11 +247,11 @@ JSR-330 / Dependency Injection for Java (http://code.google.com/p/atinject/)
         Apache v2.0 (bundled/javax.inject-1/LICENSE-2.0.txt)
 
 
-Coveo Dead Simple SAML 2.0 Client (https://github.com/coveo/saml-client)
+Onelogin Java SAML Client (https://github.com/onelogin/java-saml)
 ------------------------------------------------------------------------
 
-    Version: 1.2.0
-    From: 'Coveo' (https://www.coveo.com)
+    Version: 2.2.0
+    From: 'OneLogin' (https://www.onelogin.com)
     License(s):
-        MIT License (bundled/saml-client-1.2.0/LICENSE)
+        MIT License (bundled/java-saml-2.2.0/LICENSE)
 
