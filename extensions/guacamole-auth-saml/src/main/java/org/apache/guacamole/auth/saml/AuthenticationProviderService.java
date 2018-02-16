@@ -29,16 +29,9 @@ import com.onelogin.saml2.http.HttpRequest;
 import com.onelogin.saml2.servlet.ServletUtils;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.util.Util;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import org.apache.guacamole.auth.saml.conf.ConfigurationService;
@@ -100,15 +93,20 @@ public class AuthenticationProviderService {
         Saml2Settings samlSettings = confService.getSamlSettings();
 
         if (request != null) {
-            logger.debug(">>>SAML<<< Looking for SAML response.");
+            
+            // Look for the SAML Response parameter.
             String samlResponseParam = request.getParameter("SAMLResponse");
+
             if (samlResponseParam != null) {
-                logger.debug(">>>SAML<<< Processing SAML response.");
-                // Do SAML Response stuff here.
+
+                // Convert the SAML response into the version needed for the client.
                 HttpRequest httpRequest = ServletUtils.makeHttpRequest(request);
                 try {
+
+                    // Generate the response object
                     SamlResponse samlResponse = new SamlResponse(samlSettings, httpRequest);
-                    logger.debug(">>>SAML<<< Username: {}", samlResponse.getNameId());
+
+                    // Grab the username, and, if present, finish authentication.
                     String username = samlResponse.getNameId().toLowerCase();
                     if (username != null) {
                         credentials.setUsername(username);
@@ -117,6 +115,8 @@ public class AuthenticationProviderService {
                         return authenticatedUser;
                     }
                 }
+
+                // Errors are logged and result in a normal username/password login box.
                 catch (IOException e) {
                     logger.warn("Error during I/O while parsing SAML response: {}", e.getMessage());
                     logger.debug("Received IOException when trying to parse SAML response.", e);
@@ -162,6 +162,7 @@ public class AuthenticationProviderService {
             }
         }
 
+        // No SAML Response is present, so generate a request.
         AuthnRequest samlReq = new AuthnRequest(samlSettings);
         String reqString;
         try {
@@ -171,11 +172,11 @@ public class AuthenticationProviderService {
         catch (IOException e) {
             logger.error("Error encoding authentication request to string: {}", e.getMessage());
             logger.debug("Got IOException encoding authentication request.", e);
-            throw new GuacamoleInvalidCredentialsException("Error during SAML authentication.", CredentialsInfo.USERNAME_PASSWORD);
+            throw new GuacamoleInvalidCredentialsException("Error during SAML login.",
+                    CredentialsInfo.USERNAME_PASSWORD);
         }
-        logger.debug(">>>SAML<<< Request URL: {}", request.getRequestURL().toString());
-        logger.debug(">>>SAML<<< Request: {}", reqString);
 
+        // Redirect to SAML Identity Provider (IdP)
         throw new GuacamoleInsufficientCredentialsException("Redirecting to SAML IdP.",
                 new CredentialsInfo(Arrays.asList(new Field[] {
                     new SAMLRedirectField(reqString)

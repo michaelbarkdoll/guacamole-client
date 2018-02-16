@@ -18,7 +18,7 @@
  */
 
 /**
- * Config block which registers saml-specific field types.
+ * Config block which registers SAML-specific field types.
  */
 angular.module('guacSAML').config(['formServiceProvider',
         function guacSAMLConfig(formServiceProvider) {
