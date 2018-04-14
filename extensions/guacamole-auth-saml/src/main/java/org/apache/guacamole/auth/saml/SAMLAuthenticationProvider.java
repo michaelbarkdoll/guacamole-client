@@ -23,7 +23,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
-import org.apache.guacamole.net.auth.AuthenticationProvider;
+import org.apache.guacamole.net.auth.AbstractAuthenticationProvider;
 import org.apache.guacamole.net.auth.Credentials;
 import org.apache.guacamole.net.auth.UserContext;
 
@@ -33,7 +33,7 @@ import org.apache.guacamole.net.auth.UserContext;
  * storage for connection information, and must be layered with other
  * modules in order to retrieve connections.
  */
-public class SAMLAuthenticationProvider implements AuthenticationProvider {
+public class SAMLAuthenticationProvider extends AbstractAuthenticationProvider {
 
     /**
      * Injector which will manage the object graph of this authentication
@@ -76,59 +76,6 @@ public class SAMLAuthenticationProvider implements AuthenticationProvider {
         AuthenticationProviderService authProviderService = injector.getInstance(AuthenticationProviderService.class);
         return authProviderService.authenticateUser(credentials);
 
-    }
-
-    @Override
-    public AuthenticatedUser updateAuthenticatedUser(
-            AuthenticatedUser authenticatedUser, Credentials credentials)
-            throws GuacamoleException {
-
-        // No update necessary
-        return authenticatedUser;
-
-    }
-
-    @Override
-    public UserContext getUserContext(AuthenticatedUser authenticatedUser)
-            throws GuacamoleException {
-
-        // No associated data whatsoever
-        return null;
-
-    }
-
-    @Override
-    public UserContext updateUserContext(UserContext context,
-            AuthenticatedUser authenticatedUser, Credentials credentials)
-            throws GuacamoleException {
-
-        // No update necessary
-        return context;
-
-    }
-
-    @Override
-    public UserContext decorate(UserContext context,
-            AuthenticatedUser authenticatedUser, Credentials credentials)
-            throws GuacamoleException {
-
-        return context;
-
-    }
-
-    @Override
-    public UserContext redecorate(UserContext decorated, UserContext context,
-            AuthenticatedUser authenticatedUser, Credentials credentials)
-            throws GuacamoleException {
-
-        // No update necessary
-        return context;
-    }
-                                    
-
-    @Override
-    public void shutdown() {
-        // Do nothing
     }
 
 }
