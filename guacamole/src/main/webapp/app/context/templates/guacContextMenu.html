@@ -1,0 +1,13 @@
+<div class="contextMenu" ng-class="contextMenu.className">
+
+    <!-- Context menu title -->
+    <div ng-show="contextMenu.title" class="title-bar">
+        <div class="title">{{contextMenu.title | translate}}</div>
+    </div>
+
+    <!-- Menu items -->
+    <div ng-show="contextMenu.actions.length" class="buttons">
+        <button ng-repeat="action in contextMenu.actions" ng-click="action.callback()" ng-class="action.className">{{action.name | translate}}</button>
+    </div>
+
+</div>
