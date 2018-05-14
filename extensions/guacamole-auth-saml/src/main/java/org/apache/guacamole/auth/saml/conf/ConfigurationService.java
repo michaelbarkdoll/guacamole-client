@@ -29,7 +29,6 @@ import java.util.Map;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.environment.Environment;
 import org.apache.guacamole.properties.FileGuacamoleProperty;
-import org.apache.guacamole.properties.StringGuacamoleProperty;
 import org.apache.guacamole.properties.UrlGuacamoleProperty;
 
 /**
@@ -124,11 +123,11 @@ public class ConfigurationService {
      * client is running.
      *
      * @return
-     *     The file containinging the metadata used by the SAML client
+     *     The file containing the metadata used by the SAML client
      *     when it communicates with the SAML IdP.
      *
      * @throws GuacamoleException
-     *     If guacmaole.propeties cannot be parsed, or if the client
+     *     If guacamole.properties cannot be parsed, or if the client
      *     metadata is missing.
      */
     private File getIdpMetadata() throws GuacamoleException {
@@ -190,7 +189,7 @@ public class ConfigurationService {
      *
      * @return
      *     The collection of SAML settings used to 
-     *     initalize the SAML client.
+     *     initialize the SAML client.
      *
      * @throws GuacamoleException
      *     If guacamole.properties cannot be parsed or
@@ -199,12 +198,15 @@ public class ConfigurationService {
     public Saml2Settings getSamlSettings() throws GuacamoleException {
 
         // Initialize and configure SAML client.
-        Map<String, Object> samlMap = new HashMap<String, Object>();
+        Map<String, Object> samlMap = new HashMap<>();
         samlMap.put("onelogin.saml2.sp.entityid", getEntityId().toString());
-        samlMap.put("onelogin.saml2.sp.assertion_consumer_service.url", getCallbackUrl().toString() + "/api/ext/saml/callback");
+        samlMap.put("onelogin.saml2.sp.assertion_consumer_service.url",
+                getCallbackUrl().toString() + "/api/ext/saml/callback");
         samlMap.put("onelogin.saml2.idp.entityid", getIdpUrl().toString());
-        samlMap.put("onelogin.saml2.idp.single_sign_on_service.url", getIdpUrl().toString());
-        samlMap.put("onelogin.saml2.idp.single_sign_on_sevice.binding", "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect");
+        samlMap.put("onelogin.saml2.idp.single_sign_on_service.url",
+                getIdpUrl().toString());
+        samlMap.put("onelogin.saml2.idp.single_sign_on_sevice.binding",
+                "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect");
         SettingsBuilder samlBuilder = new SettingsBuilder();
         Saml2Settings samlSettings = samlBuilder.fromValues(samlMap).build();
         samlSettings.setDebug(true);

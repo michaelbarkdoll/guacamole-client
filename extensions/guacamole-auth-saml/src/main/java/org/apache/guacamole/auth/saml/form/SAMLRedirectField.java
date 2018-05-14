@@ -20,8 +20,6 @@
 package org.apache.guacamole.auth.saml.form;
 
 import org.apache.guacamole.form.Field;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Field definition which represents the data used to do redirects

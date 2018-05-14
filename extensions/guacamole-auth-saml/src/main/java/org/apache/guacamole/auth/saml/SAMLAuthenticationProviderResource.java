@@ -51,8 +51,16 @@ public class SAMLAuthenticationProviderResource {
     private ConfigurationService confService;
 
     /**
-     * A REST endpoint that is POSTed to by the SAML Idp
+     * A REST endpoint that is POSTed to by the SAML IdP
      * with the results of the SAML SSO Authentication.
+     * 
+     * @param samlResponse
+     *     The encoded response returned by the SAML IdP.
+     * 
+     * @return
+     *     A HTTP Response that will redirect the user back to the
+     *     Guacamole home page, with the SAMLResponse encoded in the
+     *     return URL.
      */
     @POST
     @Path("callback")
