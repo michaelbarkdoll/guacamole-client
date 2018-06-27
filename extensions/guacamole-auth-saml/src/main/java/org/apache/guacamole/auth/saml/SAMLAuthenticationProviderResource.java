@@ -30,19 +30,12 @@ import javax.ws.rs.POST;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.auth.saml.conf.ConfigurationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A class that implements the REST API necessary for the
  * SAML Idp to POST back its response to Guacamole.
  */
 public class SAMLAuthenticationProviderResource {
-
-    /**
-     * The Logger for the class.
-     */
-    private final Logger logger = LoggerFactory.getLogger(SAMLAuthenticationProviderResource.class); 
 
     /**
      * The configuration service for this module.
@@ -61,6 +54,10 @@ public class SAMLAuthenticationProviderResource {
      *     A HTTP Response that will redirect the user back to the
      *     Guacamole home page, with the SAMLResponse encoded in the
      *     return URL.
+     * 
+     * @throws org.apache.guacamole.GuacamoleException
+     *     If the Guacamole configuration cannot be read or an error occurs
+     *     parsing a URI.
      */
     @POST
     @Path("callback")
