@@ -20,6 +20,7 @@
 package org.apache.guacamole.auth.saml.conf;
 
 import com.google.inject.Inject;
+import com.onelogin.saml2.settings.IdPMetadataParser;
 import com.onelogin.saml2.settings.Saml2Settings;
 import com.onelogin.saml2.settings.SettingsBuilder;
 import java.io.File;
@@ -27,6 +28,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.guacamole.GuacamoleException;
+import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.environment.Environment;
 import org.apache.guacamole.properties.FileGuacamoleProperty;
 import org.apache.guacamole.properties.UrlGuacamoleProperty;
@@ -131,7 +133,7 @@ public class ConfigurationService {
      *     metadata is missing.
      */
     private File getIdpMetadata() throws GuacamoleException {
-        return environment.getRequiredProperty(SAML_IDP_METADATA);
+        return environment.getProperty(SAML_IDP_METADATA);
     }
 
     /**
@@ -197,16 +199,30 @@ public class ConfigurationService {
      */
     public Saml2Settings getSamlSettings() throws GuacamoleException {
 
-        // Initialize and configure SAML client.
-        Map<String, Object> samlMap = new HashMap<>();
-        samlMap.put("onelogin.saml2.sp.entityid", getEntityId().toString());
-        samlMap.put("onelogin.saml2.sp.assertion_consumer_service.url",
-                getCallbackUrl().toString() + "/api/ext/saml/callback");
-        samlMap.put("onelogin.saml2.idp.entityid", getIdpUrl().toString());
-        samlMap.put("onelogin.saml2.idp.single_sign_on_service.url",
-                getIdpUrl().toString());
-        samlMap.put("onelogin.saml2.idp.single_sign_on_sevice.binding",
-                "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect");
+        File idpMetadata = getIdpMetadata();
+        Map<String, Object> samlMap;
+        if (idpMetadata != null) {
+            try {
+                samlMap = IdPMetadataParser.parseFileXML(idpMetadata.getAbsolutePath());
+            }
+            catch (Exception e) {
+                throw new GuacamoleServerException(
+                        "Could not parse SAML IdP Metadata file.", e);
+            }
+        }
+
+        else {
+            samlMap = new HashMap<>();
+            samlMap.put("onelogin.saml2.sp.entityid", getEntityId().toString());
+            samlMap.put("onelogin.saml2.sp.assertion_consumer_service.url",
+                    getCallbackUrl().toString() + "/api/ext/saml/callback");
+            samlMap.put("onelogin.saml2.idp.entityid", getIdpUrl().toString());
+            samlMap.put("onelogin.saml2.idp.single_sign_on_service.url",
+                    getIdpUrl().toString());
+            samlMap.put("onelogin.saml2.idp.single_sign_on_sevice.binding",
+                    "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect");
+        }
+        
         SettingsBuilder samlBuilder = new SettingsBuilder();
         Saml2Settings samlSettings = samlBuilder.fromValues(samlMap).build();
         samlSettings.setDebug(true);
