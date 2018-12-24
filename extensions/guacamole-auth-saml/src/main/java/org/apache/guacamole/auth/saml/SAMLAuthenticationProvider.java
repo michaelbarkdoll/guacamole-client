@@ -42,7 +42,7 @@ public class SAMLAuthenticationProvider extends AbstractAuthenticationProvider {
 
     /**
      * Creates a new SAMLAuthenticationProvider that authenticates users
-     * against an SAML IdP.
+     * against a SAML IdP.
      *
      * @throws GuacamoleException
      *     If a required property is missing, or an error occurs while parsing

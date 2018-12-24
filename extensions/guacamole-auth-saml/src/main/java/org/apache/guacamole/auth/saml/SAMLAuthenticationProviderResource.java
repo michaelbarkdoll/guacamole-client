@@ -55,7 +55,7 @@ public class SAMLAuthenticationProviderResource {
      *     Guacamole home page, with the SAMLResponse encoded in the
      *     return URL.
      * 
-     * @throws org.apache.guacamole.GuacamoleException
+     * @throws GuacamoleException
      *     If the Guacamole configuration cannot be read or an error occurs
      *     parsing a URI.
      */

@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 /**
- * Class that provides services for use by the SAML Authentication Provider class.
+ * Class that provides services for use by the SAMLAuthenticationProvider class.
  */
 public class AuthenticationProviderService {
 
