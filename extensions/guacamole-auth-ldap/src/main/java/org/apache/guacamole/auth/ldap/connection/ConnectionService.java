@@ -38,6 +38,8 @@ import org.apache.guacamole.auth.ldap.group.UserGroupService;
 import org.apache.guacamole.auth.ldap.user.LDAPAuthenticatedUser;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.Connection;
+import org.apache.guacamole.net.auth.GuacamoleProxyConfiguration;
+import org.apache.guacamole.net.auth.GuacamoleProxyConfiguration.EncryptionMethod;
 import org.apache.guacamole.net.auth.TokenInjectingConnection;
 import org.apache.guacamole.net.auth.simple.SimpleConnection;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
@@ -78,6 +80,24 @@ public class ConnectionService {
      */
     @Inject
     private UserGroupService userGroupService;
+    
+    /**
+     * The parameter in LDAP that stores the hostname of the guacd
+     * server to use to establish the connection.
+     */
+    public static final String PROXY_HOST_PARAMETER = "proxy-hostname";
+    
+    /**
+     * The parameter in LDAP that stores the port number of the guacd
+     * server to use to establish the connection.
+     */
+    public static final String PROXY_PORT_PARAMETER = "proxy-port";
+    
+    /**
+     * The parameter in LDAP that stores the encryption type used to
+     * talk to guacd to establish the connectoin.
+     */
+    public static final String PROXY_ENCRYPTION_PARAMETER = "proxy-encryption";
 
     /**
      * Returns all Guacamole connections accessible to the user currently bound
@@ -148,12 +168,36 @@ public class ConnectionService {
 
                 // Set protocol
                 GuacamoleConfiguration config = new GuacamoleConfiguration();
+                
+                GuacamoleProxyConfiguration proxyConfig;
+                try {
+                    proxyConfig = confService.getDefaultGuacamoleProxyConfiguration();
+                }
+                catch (GuacamoleException e) {
+                    return null;
+                }
                 config.setProtocol(protocol.getStringValue());
+                
+                LDAPAttribute proxyAttribute = entry.getAttribute("guacamoleConfigProxy");
+                if (proxyAttribute != null) {
+                    
+                    Enumeration<?> proxies = proxyAttribute.getStringValues();
+                    while (proxies.hasMoreElements()) {
+                        
+                    }
+                    
+                }
 
                 // Get parameters, if any
                 LDAPAttribute parameterAttribute = entry.getAttribute("guacConfigParameter");
                 if (parameterAttribute != null) {
-
+                    
+                    
+                    String proxyHost = proxyConfig.getHostname();
+                    int proxyPort = proxyConfig.getPort();
+                    EncryptionMethod proxySSL = proxyConfig.getEncryptionMethod();
+                    
+                    
                     // For each parameter
                     Enumeration<?> parameters = parameterAttribute.getStringValues();
                     while (parameters.hasMoreElements()) {
@@ -167,18 +211,33 @@ public class ConnectionService {
                             // Parse name
                             String name = parameter.substring(0, equals);
                             String value = parameter.substring(equals+1);
-
-                            config.setParameter(name, value);
+                            
+                            switch(name) {
+                                case PROXY_HOST_PARAMETER:
+                                    proxyHost = value;
+                                    break;
+                                case PROXY_PORT_PARAMETER:
+                                    proxyPort = Integer.parseInt(value);
+                                    break;
+                                case PROXY_ENCRYPTION_PARAMETER:
+                                    proxySSL = EncryptionMethod.valueOf(value);
+                                    break;
+                                default:
+                                    config.setParameter(name, value);
+                            }
 
                         }
 
                     }
+                    
+                    if(proxySSL == EncryptionMethod.SSL)
+                        proxyConfig = new GuacamoleProxyConfiguration(proxyHost, proxyPort, proxySSL);
 
                 }
 
                 // Store connection using cn for both identifier and name
                 String name = cn.getStringValue();
-                Connection connection = new SimpleConnection(name, name, config);
+                Connection connection = new SimpleConnection(name, name, config, proxyConfig);
                 connection.setParentIdentifier(LDAPAuthenticationProvider.ROOT_CONNECTION_GROUP);
 
                 // Inject LDAP-specific tokens only if LDAP handled user

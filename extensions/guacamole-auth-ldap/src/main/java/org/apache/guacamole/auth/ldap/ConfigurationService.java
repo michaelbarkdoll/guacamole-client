@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.environment.Environment;
+import org.apache.guacamole.net.auth.GuacamoleProxyConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -394,6 +395,18 @@ public class ConfigurationService {
             LDAPGuacamoleProperties.LDAP_MEMBER_ATTRIBUTE,
             "member"
         );
+    }
+    
+    /**
+     * Return the 
+     * @return 
+     * @throws GuacamoleException
+     */
+    public GuacamoleProxyConfiguration getDefaultGuacamoleProxyConfiguration()
+        throws GuacamoleException {
+        
+        return environment.getDefaultGuacamoleProxyConfiguration();
+    
     }
 
 }

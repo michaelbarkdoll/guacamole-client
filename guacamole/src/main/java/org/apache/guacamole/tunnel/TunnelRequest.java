@@ -21,8 +21,6 @@ package org.apache.guacamole.tunnel;
 
 import java.util.List;
 import org.apache.guacamole.GuacamoleClientException;
-import org.apache.guacamole.GuacamoleClientException;
-import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleException;
 
 /**

@@ -32,6 +32,7 @@ import org.apache.guacamole.auth.jdbc.user.RemoteAuthenticatedUser;
 import org.apache.guacamole.net.GuacamoleTunnel;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.ConnectionRecord;
+import org.apache.guacamole.net.auth.GuacamoleProxyConfiguration;
 import org.apache.guacamole.protocol.GuacamoleClientInformation;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
 
@@ -167,6 +168,17 @@ public class SharedConnection implements Connection {
     @Override
     public int getActiveConnections() {
         return 0;
+    }
+    
+    @Override
+    public GuacamoleProxyConfiguration getGuacamoleProxyConfiguration()
+        throws GuacamoleException {
+        
+        // Pull the connection being shared
+        Connection primaryConnection = definition.getActiveConnection().getConnection();
+        
+        // Get the proxy configuration from the primary connection.
+        return primaryConnection.getGuacamoleProxyConfiguration();
     }
 
 }
