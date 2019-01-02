@@ -46,11 +46,6 @@ public abstract class AbstractConnection extends AbstractIdentifiable
      * The GuacamoleConfiguration associated with this connection.
      */
     private GuacamoleConfiguration configuration;
-    
-    /**
-     * 
-     * @return 
-     */
 
     @Override
     public String getName() {

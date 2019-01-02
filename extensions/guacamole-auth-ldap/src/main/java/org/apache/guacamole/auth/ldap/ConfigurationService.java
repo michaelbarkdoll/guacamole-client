@@ -396,17 +396,5 @@ public class ConfigurationService {
             "member"
         );
     }
-    
-    /**
-     * Return the 
-     * @return 
-     * @throws GuacamoleException
-     */
-    public GuacamoleProxyConfiguration getDefaultGuacamoleProxyConfiguration()
-        throws GuacamoleException {
-        
-        return environment.getDefaultGuacamoleProxyConfiguration();
-    
-    }
 
 }

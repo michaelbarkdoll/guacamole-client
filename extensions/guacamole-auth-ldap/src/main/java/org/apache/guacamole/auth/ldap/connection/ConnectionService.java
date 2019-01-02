@@ -36,6 +36,7 @@ import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.auth.ldap.ObjectQueryService;
 import org.apache.guacamole.auth.ldap.group.UserGroupService;
 import org.apache.guacamole.auth.ldap.user.LDAPAuthenticatedUser;
+import org.apache.guacamole.environment.LocalEnvironment;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.GuacamoleProxyConfiguration;
@@ -171,7 +172,7 @@ public class ConnectionService {
                 
                 GuacamoleProxyConfiguration proxyConfig;
                 try {
-                    proxyConfig = confService.getDefaultGuacamoleProxyConfiguration();
+                    proxyConfig = new LocalEnvironment().getDefaultGuacamoleProxyConfiguration();
                 }
                 catch (GuacamoleException e) {
                     return null;
@@ -192,11 +193,10 @@ public class ConnectionService {
                 LDAPAttribute parameterAttribute = entry.getAttribute("guacConfigParameter");
                 if (parameterAttribute != null) {
                     
-                    
+                    // Retrieve the default proxy parameters.
                     String proxyHost = proxyConfig.getHostname();
                     int proxyPort = proxyConfig.getPort();
                     EncryptionMethod proxySSL = proxyConfig.getEncryptionMethod();
-                    
                     
                     // For each parameter
                     Enumeration<?> parameters = parameterAttribute.getStringValues();
@@ -212,6 +212,8 @@ public class ConnectionService {
                             String name = parameter.substring(0, equals);
                             String value = parameter.substring(equals+1);
                             
+                            // Pull out and set proxy parameters, if present
+                            // Otherwise set the parameter.
                             switch(name) {
                                 case PROXY_HOST_PARAMETER:
                                     proxyHost = value;
@@ -230,8 +232,7 @@ public class ConnectionService {
 
                     }
                     
-                    if(proxySSL == EncryptionMethod.SSL)
-                        proxyConfig = new GuacamoleProxyConfiguration(proxyHost, proxyPort, proxySSL);
+                    proxyConfig = new GuacamoleProxyConfiguration(proxyHost, proxyPort, proxySSL);
 
                 }
 
