@@ -178,16 +178,6 @@ public class ConnectionService {
                     return null;
                 }
                 config.setProtocol(protocol.getStringValue());
-                
-                LDAPAttribute proxyAttribute = entry.getAttribute("guacamoleConfigProxy");
-                if (proxyAttribute != null) {
-                    
-                    Enumeration<?> proxies = proxyAttribute.getStringValues();
-                    while (proxies.hasMoreElements()) {
-                        
-                    }
-                    
-                }
 
                 // Get parameters, if any
                 LDAPAttribute parameterAttribute = entry.getAttribute("guacConfigParameter");
