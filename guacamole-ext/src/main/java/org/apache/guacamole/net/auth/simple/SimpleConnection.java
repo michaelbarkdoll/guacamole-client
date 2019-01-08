@@ -54,7 +54,8 @@ public class SimpleConnection extends AbstractConnection {
     private GuacamoleConfiguration config;
     
     /**
-     * Guacamole proxy configuration.
+     * Guacamole proxy configuration, which tells the Guacamole client how to
+     * establish a connection to guacd.
      */
     private GuacamoleProxyConfiguration proxyConfig;
 
@@ -100,7 +101,7 @@ public class SimpleConnection extends AbstractConnection {
      *     The name of the connection.
      * 
      * @param identifier
-     *     The identifier to associated with the connection.
+     *     The identifier to associate with the connection.
      * 
      * @param config
      *     The configuration that describes how to establish the connection.
@@ -109,12 +110,12 @@ public class SimpleConnection extends AbstractConnection {
      *     The proxy configuration that specifies how to connect to guacd.
      */
     public SimpleConnection(String name, String identifier,
-            GuacamoleConfiguration config, GuacamoleProxyConfiguration proxyConfig) {
-        super.setName(name);
-        super.setIdentifier(identifier);
-        super.setConfiguration(config);
-        this.config = config;
+            GuacamoleConfiguration config,
+            GuacamoleProxyConfiguration proxyConfig) {
+
+        this(name, identifier, config);
         this.proxyConfig = proxyConfig;
+
     }
 
     @Override

@@ -28,7 +28,6 @@ import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.net.GuacamoleTunnel;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.ConnectionRecord;
-import org.apache.guacamole.net.auth.GuacamoleProxyConfiguration;
 import org.apache.guacamole.protocol.GuacamoleClientInformation;
 import org.apache.guacamole.protocol.GuacamoleConfiguration;
 
@@ -143,5 +142,5 @@ public class APIConnectionWrapper implements Connection {
     public List<? extends ConnectionRecord> getHistory() throws GuacamoleException {
         return Collections.<ConnectionRecord>emptyList();
     }
-
+    
 }

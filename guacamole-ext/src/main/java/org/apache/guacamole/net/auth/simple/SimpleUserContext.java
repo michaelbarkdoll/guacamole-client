@@ -69,8 +69,7 @@ public class SimpleUserContext extends AbstractUserContext {
      *     UserContext has read access.
      */
     public SimpleUserContext(AuthenticationProvider authProvider,
-            Map<String, GuacamoleConfiguration> configs)
-            throws GuacamoleException {
+            Map<String, GuacamoleConfiguration> configs) {
         this(authProvider, AuthenticatedUser.ANONYMOUS_IDENTIFIER, configs);
     }
 
@@ -89,8 +88,7 @@ public class SimpleUserContext extends AbstractUserContext {
      *     this UserContext has read access.
      */
     public SimpleUserContext(AuthenticationProvider authProvider,
-            String username, Map<String, GuacamoleConfiguration> configs) 
-            throws GuacamoleException {
+            String username, Map<String, GuacamoleConfiguration> configs) {
 
         // Produce map of connections from given configs
         Map<String, Connection> connections = new ConcurrentHashMap<String, Connection>(configs.size());
