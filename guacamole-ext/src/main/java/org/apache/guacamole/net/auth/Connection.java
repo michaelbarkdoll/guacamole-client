@@ -125,17 +125,5 @@ public interface Connection extends Identifiable, Connectable, Attributes {
      *     connection.
      */
     public Set<String> getSharingProfileIdentifiers() throws GuacamoleException;
-    
-    /**
-     * Get the GuacamoleProxyConfiguration for this connection.
-     * 
-     * @return
-     *     The GuacamoleProxyConfiguration for this connection.
-     * 
-     * @throws GuacamoleException 
-     *     If configuration information cannot be retrieved or parsed.
-     */
-    public GuacamoleProxyConfiguration getGuacamoleProxyConfiguration()
-            throws GuacamoleException;
 
 }

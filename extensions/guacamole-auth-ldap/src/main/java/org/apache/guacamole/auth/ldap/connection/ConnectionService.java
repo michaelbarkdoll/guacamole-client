@@ -36,7 +36,6 @@ import org.apache.guacamole.GuacamoleServerException;
 import org.apache.guacamole.auth.ldap.ObjectQueryService;
 import org.apache.guacamole.auth.ldap.group.UserGroupService;
 import org.apache.guacamole.auth.ldap.user.LDAPAuthenticatedUser;
-import org.apache.guacamole.environment.LocalEnvironment;
 import org.apache.guacamole.net.auth.AuthenticatedUser;
 import org.apache.guacamole.net.auth.Connection;
 import org.apache.guacamole.net.auth.GuacamoleProxyConfiguration;
@@ -56,7 +55,7 @@ public class ConnectionService {
     /**
      * Logger for this class.
      */
-    private final Logger logger = LoggerFactory.getLogger(ConnectionService.class);
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionService.class);
 
     /**
      * Service for escaping parts of LDAP queries.
@@ -81,6 +80,21 @@ public class ConnectionService {
      */
     @Inject
     private UserGroupService userGroupService;
+    
+    /**
+     * The LDAP attribute to query to retrieve parameters.
+     */
+    public static final String LDAP_PARAMETER_ATTRIBUTE = "guacConfigParameter";
+    
+    /**
+     * The LDAP attribute to query to retrieve protocol configuration.
+     */
+    public static final String LDAP_PROTOCOL_ATTRIBUTE = "guacConfigProtocol";
+    
+    /**
+     * The LDAP attribute to query to retrieve proxy configuration.
+     */
+    public static final String LDAP_PROXY_ATTRIBUTE = "guacConfigProxy";
     
     /**
      * The parameter in LDAP that stores the hostname of the guacd
@@ -159,7 +173,7 @@ public class ConnectionService {
                 }
 
                 // Get associated protocol
-                LDAPAttribute protocol = entry.getAttribute("guacConfigProtocol");
+                LDAPAttribute protocol = entry.getAttribute(LDAP_PROTOCOL_ATTRIBUTE);
                 if (protocol == null) {
                     logger.warn("guacConfigGroup \"{}\" is missing the "
                               + "required \"guacConfigProtocol\" attribute.",
@@ -172,24 +186,28 @@ public class ConnectionService {
                 
                 GuacamoleProxyConfiguration proxyConfig;
                 try {
-                    proxyConfig = new LocalEnvironment().getDefaultGuacamoleProxyConfiguration();
+                    proxyConfig = confService.getDefaultGuacamoleProxyConfiguration();
                 }
                 catch (GuacamoleException e) {
+                    logger.warn("Could not retrieve Guacamole proxy configuration.",
+                            e.getMessage());
+                    logger.debug("Error when trying to get Guacamole proxy configuration.",
+                            e);
                     return null;
                 }
                 config.setProtocol(protocol.getStringValue());
-
-                // Get parameters, if any
-                LDAPAttribute parameterAttribute = entry.getAttribute("guacConfigParameter");
-                if (parameterAttribute != null) {
+                
+                // Get proxy configuration, if any
+                LDAPAttribute proxyAttribute = entry.getAttribute(LDAP_PROXY_ATTRIBUTE);
+                if (proxyAttribute != null) {
                     
                     // Retrieve the default proxy parameters.
                     String proxyHost = proxyConfig.getHostname();
                     int proxyPort = proxyConfig.getPort();
                     EncryptionMethod proxySSL = proxyConfig.getEncryptionMethod();
                     
-                    // For each parameter
-                    Enumeration<?> parameters = parameterAttribute.getStringValues();
+                                        // For each parameter
+                    Enumeration<?> parameters = proxyAttribute.getStringValues();
                     while (parameters.hasMoreElements()) {
 
                         String parameter = (String) parameters.nextElement();
@@ -215,14 +233,36 @@ public class ConnectionService {
                                     proxySSL = EncryptionMethod.valueOf(value);
                                     break;
                                 default:
-                                    config.setParameter(name, value);
+                                    logger.warn("Invalid proxy configuration item specified.");
                             }
+
+                        }
+                    }
+                    proxyConfig = new GuacamoleProxyConfiguration(proxyHost, proxyPort, proxySSL);
+                }
+
+                // Get parameters, if any
+                LDAPAttribute parameterAttribute = entry.getAttribute(LDAP_PARAMETER_ATTRIBUTE);
+                if (parameterAttribute != null) {
+                    
+                    // For each parameter
+                    Enumeration<?> parameters = parameterAttribute.getStringValues();
+                    while (parameters.hasMoreElements()) {
+
+                        String parameter = (String) parameters.nextElement();
+
+                        // Parse parameter
+                        int equals = parameter.indexOf('=');
+                        if (equals != -1) {
+
+                            // Parse name and value and set parameter
+                            String name = parameter.substring(0, equals);
+                            String value = parameter.substring(equals+1);
+                            config.setParameter(name, value);
 
                         }
 
                     }
-                    
-                    proxyConfig = new GuacamoleProxyConfiguration(proxyHost, proxyPort, proxySSL);
 
                 }
 

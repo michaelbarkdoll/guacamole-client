@@ -137,11 +137,5 @@ public class DelegatingConnection implements Connection {
     public int getActiveConnections() {
         return connection.getActiveConnections();
     }
-    
-    @Override
-    public GuacamoleProxyConfiguration getGuacamoleProxyConfiguration()
-        throws GuacamoleException {
-        return connection.getGuacamoleProxyConfiguration();
-    }
 
 }

@@ -396,5 +396,20 @@ public class ConfigurationService {
             "member"
         );
     }
+    
+    /**
+     * Return the default configuration for how a the client connects
+     * to guacd in order to estblish the connection.
+     * 
+     * @return
+     *     The proxy configuration that describes how to connect to guacd.
+     * 
+     * @throws GuacamoleException
+     *     If guacamole.properties cannot be parsed.
+     */
+    public GuacamoleProxyConfiguration getDefaultGuacamoleProxyConfiguration()
+            throws GuacamoleException {
+        return environment.getDefaultGuacamoleProxyConfiguration();
+    }
 
 }

@@ -169,16 +169,5 @@ public class SharedConnection implements Connection {
     public int getActiveConnections() {
         return 0;
     }
-    
-    @Override
-    public GuacamoleProxyConfiguration getGuacamoleProxyConfiguration()
-        throws GuacamoleException {
-        
-        // Pull the connection being shared
-        Connection primaryConnection = definition.getActiveConnection().getConnection();
-        
-        // Get the proxy configuration from the primary connection.
-        return primaryConnection.getGuacamoleProxyConfiguration();
-    }
 
 }

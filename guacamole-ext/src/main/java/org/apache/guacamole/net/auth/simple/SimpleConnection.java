@@ -68,16 +68,18 @@ public class SimpleConnection extends AbstractConnection {
      * Creates a new SimpleConnection having the given identifier and
      * GuacamoleConfiguration.
      *
-     * @param name The name to associate with this connection.
-     * @param identifier The identifier to associate with this connection.
-     * @param config The configuration describing how to connect to this
-     *               connection.
+     * @param name
+     *     The name to associate with this connection.
      * 
-     * @throws GuacamoleException
-     *     If the default proxy configuration cannot be retrieved.
+     * @param identifier
+     *     The identifier to associate with this connection.
+     * 
+     * @param config
+     *     The configuration describing how to connect to this
+     *     connection.
      */
     public SimpleConnection(String name, String identifier,
-            GuacamoleConfiguration config) throws GuacamoleException {
+            GuacamoleConfiguration config) {
         
         // Set name
         super.setName(name);
@@ -88,10 +90,24 @@ public class SimpleConnection extends AbstractConnection {
         // Set config
         super.setConfiguration(config);
         this.config = config;
-        this.proxyConfig = new LocalEnvironment().getDefaultGuacamoleProxyConfiguration();
-
     }
     
+    /**
+     * Creates a new SimpleConnection object with the given name, identifier,
+     * GuacamoleConfiguration, and proxy configuration.
+     * 
+     * @param name
+     *     The name of the connection.
+     * 
+     * @param identifier
+     *     The identifier to associated with the connection.
+     * 
+     * @param config
+     *     The configuration that describes how to establish the connection.
+     * 
+     * @param proxyConfig
+     *     The proxy configuration that specifies how to connect to guacd.
+     */
     public SimpleConnection(String name, String identifier,
             GuacamoleConfiguration config, GuacamoleProxyConfiguration proxyConfig) {
         super.setName(name);
@@ -119,6 +135,10 @@ public class SimpleConnection extends AbstractConnection {
     @Override
     public GuacamoleTunnel connect(GuacamoleClientInformation info,
             Map<String, String> tokens) throws GuacamoleException {
+
+        // If we don't already have a proxy configuration, retrieve the defualt.
+        if (proxyConfig == null)
+            proxyConfig = new LocalEnvironment().getDefaultGuacamoleProxyConfiguration();
 
         // Get guacd connection parameters
         String hostname = proxyConfig.getHostname();
@@ -167,11 +187,6 @@ public class SimpleConnection extends AbstractConnection {
     @Override
     public List<ConnectionRecord> getHistory() throws GuacamoleException {
         return Collections.<ConnectionRecord>emptyList();
-    }
-    
-    @Override
-    public GuacamoleProxyConfiguration getGuacamoleProxyConfiguration() {
-        return proxyConfig;
     }
 
 }
