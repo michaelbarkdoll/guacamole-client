@@ -244,7 +244,7 @@ public class ConnectionService {
                 // Get parameters, if any
                 LDAPAttribute parameterAttribute = entry.getAttribute(LDAP_PARAMETER_ATTRIBUTE);
                 if (parameterAttribute != null) {
-                    
+
                     // For each parameter
                     Enumeration<?> parameters = parameterAttribute.getStringValues();
                     while (parameters.hasMoreElements()) {
