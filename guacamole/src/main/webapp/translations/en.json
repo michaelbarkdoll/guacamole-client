@@ -168,6 +168,7 @@
 
         "INFO_ACTIVE_USER_COUNT" : "@:APP.INFO_ACTIVE_USER_COUNT",
 
+        "INFO_NO_ACTIVE_CONNECTIONS" : "No active connections.",
         "INFO_NO_RECENT_CONNECTIONS" : "No recent connections.",
         
         "PASSWORD_CHANGED" : "Password changed.",

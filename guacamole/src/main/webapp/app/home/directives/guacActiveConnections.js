@@ -48,6 +48,7 @@ angular.module('home').directive('guacActiveConnections', [function guacActiveCo
             var ClientIdentifier = $injector.get('ClientIdentifier');
 
             // Required services
+            var $log = $injector.get('$log');
             var guacClientManager = $injector.get('guacClientManager');
 
             /**
@@ -64,10 +65,11 @@ angular.module('home').directive('guacActiveConnections', [function guacActiveCo
              * yet in the history.
              *
              * @returns {Boolean}
-             *     true if recent (or active) connections are present, false
+             *     true if active connections are present, false
              *     otherwise.
              */
             $scope.hasActiveConnections = function hasActiveConnections() {
+                $log.debug('There are ' + $scope.activeConnections.length + ' active connections.');
                 return !!($scope.activeConnections.length);
             };
 
@@ -125,12 +127,14 @@ angular.module('home').directive('guacActiveConnections', [function guacActiveCo
                 // Add all child connections
                 if (connectionGroup.childConnections)
                     connectionGroup.childConnections.forEach(function addChildConnection(child) {
+                        $log.debug('Adding child connection...');
                         addVisibleConnection(dataSource, child);
                     });
 
                 // Add all child connection groups
                 if (connectionGroup.childConnectionGroups)
                     connectionGroup.childConnectionGroups.forEach(function addChildConnectionGroup(child) {
+                        $log.debug('Adding child connection group.');
                         addVisibleConnectionGroup(dataSource, child);
                     });
 
@@ -154,6 +158,7 @@ angular.module('home').directive('guacActiveConnections', [function guacActiveCo
 
                 // Add all active connections
                 for (var id in managedClients) {
+                    $log.debug('Looking at managedClient ' + id);
 
                     // Get corresponding managed client
                     var client = managedClients[id];
