@@ -93,6 +93,8 @@ angular.module('home').directive('guacActiveConnections', [function guacActiveCo
              *     The connection to add to the internal set of visible objects.
              */
             var addVisibleConnection = function addVisibleConnection(dataSource, connection) {
+                
+                $log.debug('Adding visible connection ' + connection.identifier);
 
                 // Add given connection to set of visible objects
                 visibleObjects[ClientIdentifier.toString({
@@ -117,6 +119,8 @@ angular.module('home').directive('guacActiveConnections', [function guacActiveCo
              */
             var addVisibleConnectionGroup = function addVisibleConnectionGroup(dataSource, connectionGroup) {
 
+                $log.debug('Adding visible connection group ' + connectionGroup.identifier);
+                
                 // Add given connection group to set of visible objects
                 visibleObjects[ClientIdentifier.toString({
                     dataSource : dataSource,
@@ -155,6 +159,7 @@ angular.module('home').directive('guacActiveConnections', [function guacActiveCo
                 }
 
                 var managedClients = guacClientManager.getManagedClients();
+                $log.debug('There are ' + managedClients.length + ' managed clients.');
 
                 // Add all active connections
                 for (var id in managedClients) {
