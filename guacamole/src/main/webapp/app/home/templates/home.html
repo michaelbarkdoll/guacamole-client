@@ -3,6 +3,14 @@
 
     <div class="connection-list-ui">
 
+        <!-- Active connections for this user -->
+        <div class="header">
+            <h2>{{'HOME.SECTION_HEADER_ACTIVE_CONNECTIONS' | translate}}</h2>
+        </div>
+        <div class="active-connections">
+            <guac-active-connections root-groups="rootConnectionGroups"></guac-active-connections>
+        </div>
+        
         <!-- The recent connections for this user -->
         <div class="header">
             <h2>{{'HOME.SECTION_HEADER_RECENT_CONNECTIONS' | translate}}</h2>
