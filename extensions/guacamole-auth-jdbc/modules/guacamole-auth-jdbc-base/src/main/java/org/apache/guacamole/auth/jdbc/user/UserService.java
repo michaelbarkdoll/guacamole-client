@@ -411,6 +411,9 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
 
         // Retrieve corresponding user model, if such a user exists
         UserModel userModel = userMapper.selectOne(username);
+        
+        // If no user exists, create a temporary one to map
+        // the authenticated user.
         if (userModel == null) {
             userModel = new UserModel();
             userModel.setIdentifier(username);
