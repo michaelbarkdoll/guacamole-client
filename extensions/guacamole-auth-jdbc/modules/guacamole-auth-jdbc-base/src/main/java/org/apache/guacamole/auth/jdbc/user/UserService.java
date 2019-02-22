@@ -412,7 +412,7 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
         // Retrieve corresponding user model, if such a user exists
         UserModel userModel = userMapper.selectOne(username);
         if (userModel == null)
-            return null;
+            userModel = new UserModel();
 
         // Create corresponding user object, set up cyclic reference
         ModeledUser user = getObjectInstance(null, userModel);
