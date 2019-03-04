@@ -36,6 +36,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
 
     // Required services
     var $document              = $injector.get('$document');
+    var $log                   = $injector.get('$log');
     var $q                     = $injector.get('$q');
     var $rootScope             = $injector.get('$rootScope');
     var $window                = $injector.get('$window');
@@ -47,6 +48,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
     var guacAudio              = $injector.get('guacAudio');
     var guacHistory            = $injector.get('guacHistory');
     var guacImage              = $injector.get('guacImage');
+    var guacPrompt             = $injector.get('guacPrompt');
     var guacVideo              = $injector.get('guacVideo');
 
     /**
@@ -505,6 +507,40 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
         client.onfilesystem = function fileSystemReceived(object, name) {
             $rootScope.$apply(function exposeFilesystem() {
                 managedClient.filesystems.push(ManagedFilesystem.getInstance(object, name));
+            });
+        };
+        
+        // Handle any received prompts
+        client.onprompt = function promptReceived(parameter) {
+            $log.debug('>>>PROMPT<<< Received prompt for parameter ' + parameter);
+            guacPrompt.showPrompt({
+                'title': 'Parameter Required',
+                'text': {
+                    'key': 'CLIENT.REQUIRED_INFORMATION_MISSING'
+                },
+                'parameters': [
+                    parameter
+                ],
+                'actions': [
+                    {
+                        'name': 'Continue',
+                        'callback': function continueConnection() {
+                            var stream = client.createArgumentValueStream("string", parameter);
+                            var writer = Guacamole.StringWriter(stream);
+                            writer.sendText(this.responses)
+                            writer.sendEnd();
+                            
+                        }
+                    },
+                    {
+                        'name': 'Cancel',
+                        'callback': function cancelConnection() {
+                            client.disconnnect();
+                            guacPrompt.showPrompt(false);
+                        }
+                    }
+                ]
+                
             });
         };
 
