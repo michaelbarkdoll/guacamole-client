@@ -1,0 +1,34 @@
+<div class="prompt" ng-class="prompt.className">
+
+    <!-- Notification title -->
+    <div ng-show="prompt.title" class="title-bar">
+        <div class="title">{{prompt.title | translate}}</div>
+    </div>
+
+    <div class="body">
+
+        <!-- Prompt text -->
+        <p ng-show="prompt.text" class="text"
+           translate="{{prompt.text.key}}"
+           translate-values="{{prompt.text.variables}}"></p>
+        
+        <!-- Parameters -->
+        <div ng-repeat="parameter in prompt.parameters" class="parameter">
+            <div class="label">
+                {{ parameter.field.name | translate }}
+            </div>
+            <div>
+                <guac-form-field
+                    field="parameter.field"
+                    namespace="getNamespace(prompt.connection.protocol)"
+                    model="prompt.responses[parameter.field.name]"/>
+            </div>
+        </div>
+    </div>
+
+    <!-- Buttons -->
+    <div ng-show="prompt.actions.length" class="buttons">
+        <button ng-repeat="action in prompt.actions" ng-click="prompt.callback()" ng-class="prompt.className">{{action.name | translate}}</button>
+    </div>
+
+</div>
