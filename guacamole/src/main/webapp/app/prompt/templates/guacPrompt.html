@@ -15,13 +15,13 @@
         <!-- Parameters -->
         <div ng-repeat="parameter in prompt.parameters" class="parameter">
             <div class="label">
-                {{ parameter.field.name | translate }}
+                {{ parameter.name | translate }}
             </div>
             <div>
                 <guac-form-field
-                    field="parameter.field"
-                    namespace="getNamespace(prompt.connection.protocol)"
-                    model="prompt.responses[parameter.field.name]"/>
+                    field="parameter"
+                    namespace="getNamespace(protocol)"
+                    model="prompt.responses[parameter.name]"/>
             </div>
         </div>
     </div>
