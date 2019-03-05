@@ -525,6 +525,26 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             
             getProtocolInfo.then(function gotProtocolInfo(protocolInfo) {
                 $log.debug('>>>PROMPT<<< Protocol data: ' + JSON.stringify(protocolInfo, null, 2));
+                
+                var promptField = {
+                    'name' : parameter,
+                    'type' : 'TEXT'
+                };
+                
+                findProtocol:
+                for (i = 0; i < protocolInfo.connectionForms.length; i++) {
+                    var currentForm = protocolInfo.connectionForms[i];
+                    for (j = 0; i < currentForm.fields.length; j++) {
+                        var currentField = currentForm.fields[j];
+                        if (currentField.name === parameter) {
+                            promptField = currentField;
+                            break findProtocol;
+                        }
+                    }
+                }
+                
+                $log.debug('>>>PROMPT<<< Selected the following field: ' + JSON.stringify(promptField, null, 2));
+                
                 guacPrompt.showPrompt({
                     'title': 'Parameter Required',
                     'text': {
