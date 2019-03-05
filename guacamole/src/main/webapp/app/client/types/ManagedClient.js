@@ -44,6 +44,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
     var connectionGroupService = $injector.get('connectionGroupService');
     var connectionService      = $injector.get('connectionService');
     var requestService         = $injector.get('requestService');
+    var schemaService          = $injector.get('schemaService');
     var tunnelService          = $injector.get('tunnelService');
     var guacAudio              = $injector.get('guacAudio');
     var guacHistory            = $injector.get('guacHistory');
@@ -326,6 +327,9 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             client : client,
             tunnel : tunnel
         });
+        
+        // Parse connection details from ID
+        var clientIdentifier = ClientIdentifier.fromString(id);
 
         // Fire events for tunnel errors
         tunnel.onerror = function tunnelError(status) {
@@ -512,43 +516,50 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
         
         // Handle any received prompts
         client.onprompt = function promptReceived(parameter) {
+            
+            var dataSource = clientIdentifier.dataSource;
+            var identifier = clientIdentifier.id;
+            var getProtocolInfo = schemaService.getProtocol(dataSource, identifier);
+            
+            $log.debug('>>>PROMPT<<< Connection parameters: ' + connectionParameters);
             $log.debug('>>>PROMPT<<< Received prompt for parameter ' + parameter);
-            guacPrompt.showPrompt({
-                'title': 'Parameter Required',
-                'text': {
-                    'key': 'CLIENT.REQUIRED_INFORMATION_MISSING'
-                },
-                'parameters': [
-                    parameter
-                ],
-                'actions': [
-                    {
-                        'name': 'Continue',
-                        'callback': function continueConnection() {
-                            var stream = client.createArgumentValueStream("string", parameter);
-                            var writer = Guacamole.StringWriter(stream);
-                            writer.sendText(this.responses)
-                            writer.sendEnd();
-                            
-                        }
+            
+            getProtocolInfo.then(function gotProtocolInfo(protocolInfo) {
+                $log.debug('>>>PROMPT<<< Protocol data: ' + protocolInfo);
+                guacPrompt.showPrompt({
+                    'title': 'Parameter Required',
+                    'text': {
+                        'key': 'CLIENT.REQUIRED_INFORMATION_MISSING'
                     },
-                    {
-                        'name': 'Cancel',
-                        'callback': function cancelConnection() {
-                            client.disconnnect();
-                            guacPrompt.showPrompt(false);
+                    'parameters': [
+                        parameter
+                    ],
+                    'actions': [
+                        {
+                            'name': 'Continue',
+                            'callback': function continueConnection() {
+                                var stream = client.createArgumentValueStream("string", parameter);
+                                var writer = Guacamole.StringWriter(stream);
+                                writer.sendText(this.responses)
+                                writer.sendEnd();
+
+                            }
+                        },
+                        {
+                            'name': 'Cancel',
+                            'callback': function cancelConnection() {
+                                client.disconnnect();
+                                guacPrompt.showPrompt(false);
+                            }
                         }
-                    }
-                ]
-                
+                    ]
+
+                });
             });
         };
 
         // Manage the client display
         managedClient.managedDisplay = ManagedDisplay.getInstance(client.getDisplay());
-
-        // Parse connection details from ID
-        var clientIdentifier = ClientIdentifier.fromString(id);
 
         // Connect the Guacamole client
         getConnectString(clientIdentifier, connectionParameters)
