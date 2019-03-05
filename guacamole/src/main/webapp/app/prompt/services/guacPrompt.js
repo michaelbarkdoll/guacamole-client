@@ -26,7 +26,6 @@ angular.module('prompt').factory('guacPrompt', ['$injector',
     // Required services
     var $log                  = $injector.get('$log');
     var $rootScope            = $injector.get('$rootScope');
-    var requestService        = $injector.get('requestService');
     var sessionStorageFactory = $injector.get('sessionStorageFactory');
 
     var service = {};
@@ -71,7 +70,6 @@ angular.module('prompt').factory('guacPrompt', ['$injector',
      *     The prompt to show.
      */
     service.showPrompt = function showPrompt(prompt) {
-        $log.debug('>>>PROMPT<<< Showing prompt ' + prompt);
         if (!storedPrompt() || !prompt)
             storedPrompt(prompt);
     };
