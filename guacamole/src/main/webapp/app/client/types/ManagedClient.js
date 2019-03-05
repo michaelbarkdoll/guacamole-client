@@ -521,11 +521,10 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
             var identifier = clientIdentifier.id;
             var getProtocolInfo = schemaService.getProtocol(dataSource, identifier);
             
-            $log.debug('>>>PROMPT<<< Connection parameters: ' + connectionParameters);
             $log.debug('>>>PROMPT<<< Received prompt for parameter ' + parameter);
             
             getProtocolInfo.then(function gotProtocolInfo(protocolInfo) {
-                $log.debug('>>>PROMPT<<< Protocol data: ' + protocolInfo);
+                $log.debug('>>>PROMPT<<< Protocol data: ' + JSON.stringify(protocolInfo));
                 guacPrompt.showPrompt({
                     'title': 'Parameter Required',
                     'text': {
