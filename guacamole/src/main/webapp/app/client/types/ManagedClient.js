@@ -534,7 +534,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
                 findProtocol:
                 for (i = 0; i < protocolInfo.connectionForms.length; i++) {
                     var currentForm = protocolInfo.connectionForms[i];
-                    for (j = 0; i < currentForm.fields.length; j++) {
+                    for (j = 0; j < currentForm.fields.length; j++) {
                         var currentField = currentForm.fields[j];
                         if (currentField.name === parameter) {
                             promptField = currentField;
