@@ -34,6 +34,7 @@ import org.apache.guacamole.GuacamoleClientException;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleSecurityException;
 import org.apache.guacamole.GuacamoleUnsupportedException;
+import org.apache.guacamole.auth.jdbc.JDBCEnvironment;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordModel;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSearchTerm;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSortPredicate;
@@ -155,6 +156,12 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
      */
     @Inject
     private PasswordPolicyService passwordPolicyService;
+    
+    /**
+     * The configuration environment for this extension.
+     */
+    @Inject
+    private JDBCEnvironment environment;
 
     @Override
     protected ModeledDirectoryObjectMapper<UserModel> getObjectMapper() {
@@ -402,6 +409,11 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
     public ModeledUser retrieveUser(AuthenticationProvider authenticationProvider,
             AuthenticatedUser authenticatedUser) throws GuacamoleException {
 
+        boolean autoCreate = environment.autoCreateAbsentAccounts();
+        
+        if (authenticatedUser == null)
+            throw new GuacamoleSecurityException("Authentication without an authenticated user.");
+
         // If we already queried this user, return that rather than querying again
         if (authenticatedUser instanceof ModeledAuthenticatedUser)
             return ((ModeledAuthenticatedUser) authenticatedUser).getUser();
@@ -411,15 +423,38 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
 
         // Retrieve corresponding user model, if such a user exists
         UserModel userModel = userMapper.selectOne(username);
-        if (userModel == null)
-            return null;
-
+        ModeledUser user = null;
+        
         // Create corresponding user object, set up cyclic reference
-        ModeledUser user = getObjectInstance(null, userModel);
-        user.setCurrentUser(new ModeledAuthenticatedUser(authenticatedUser,
+        if (userModel != null) {
+            user = getObjectInstance(null, userModel);
+            user.setCurrentUser(new ModeledAuthenticatedUser(authenticatedUser,
                 authenticationProvider, user));
+        }
+        
+        // Create the corresponding database account for the authenticated user
+        else if (environment.autoCreateAbsentAccounts()) {
+            
+            // Create an empty model
+            userModel = new UserModel();
+            userModel.setIdentifier(username);
+            
+            // Insert the database object
+            entityMapper.insert(userModel);
+            user = getObjectInstance(null, userModel);
+            
+            // Auto-generate a password
+            user.setPassword(null);
+            
+            // Set up cyclic reference
+            user.setCurrentUser(new ModeledAuthenticatedUser(authenticatedUser,
+                authenticationProvider, user));
+            
+            // Insert the user object
+            userMapper.insert(userModel);
+        }
 
-        // Return already-authenticated user
+        // Return the user
         return user;
 
     }
