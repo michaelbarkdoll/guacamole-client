@@ -181,5 +181,13 @@ public class SQLServerGuacamoleProperties {
         public String getName() { return "sqlserver-driver"; }
 
     };
+    
+    public static final BooleanGuacamoleProperty SQLSERVER_AUTO_CREATE_ACCOUNTS =
+            new BooleanGuacamoleProperty() {
+    
+        @Override
+        public String getName() { return "sqlserver-auto-create-accounts"; }
+                
+    };
 
 }

@@ -249,4 +249,10 @@ public class PostgreSQLEnvironment extends JDBCEnvironment {
         return true; // All versions of PostgreSQL support recursive queries through CTEs
     }
     
+    @Override
+    public boolean autoCreateAbsentAccounts() throws GuacamoleException {
+        return getProperty(PostgreSQLGuacamoleProperties.POSTGRESQL_AUTO_CREATE_ACCOUNTS,
+                false);
+    }
+    
 }

@@ -165,5 +165,19 @@ public class MySQLGuacamoleProperties {
         public String getName() { return "mysql-default-max-group-connections-per-user"; }
 
     };
+    
+    /**
+     * Whether or not accounts should be auto-created if logged in successfully
+     * via another module.  If true, accounts will be created in the MySQL
+     * database if they do not already exist, if false, accounts will not be
+     * automatically created.
+     */
+    public static final BooleanGuacamoleProperty MYSQL_AUTO_CREATE_ACCOUNTS =
+            new BooleanGuacamoleProperty() {
+           
+        @Override
+        public String getName() { return "mysql-auto-create-accounts"; }
+                
+    };
 
 }

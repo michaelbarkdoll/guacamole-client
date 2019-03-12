@@ -151,5 +151,19 @@ public abstract class JDBCEnvironment extends LocalEnvironment {
      *     true if the database supports recursive queries, false otherwise.
      */
     public abstract boolean isRecursiveQuerySupported(SqlSession session);
+    
+    /**
+     * Returns whether the database module should automatically create accounts
+     * for users that are logged in successfully via other extensions.  Returns
+     * true if user accounts will be auto-created, otherwise returns false.
+     * 
+     * @return 
+     *     True if user accounts will be automatically created when logged in
+     *     successfully from other modules; otherwise false.
+     * 
+     * @throws GuacamoleException
+     *     If guacamole.properties cannot be parsed.
+     */
+    public abstract boolean autoCreateAbsentAccounts() throws GuacamoleException;
 
 }

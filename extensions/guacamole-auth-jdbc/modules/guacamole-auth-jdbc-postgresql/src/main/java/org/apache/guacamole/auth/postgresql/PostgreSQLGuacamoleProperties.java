@@ -170,5 +170,19 @@ public class PostgreSQLGuacamoleProperties {
         public String getName() { return "postgresql-default-max-group-connections-per-user"; }
 
     };
+    
+    /**
+     * Whether or not accounts that are missing from PostgreSQL but are logged
+     * in successfully from another extension will be automatically created
+     * in the PostgreSQL database.  True if accounts will be created, otherwise
+     * false.
+     */
+    public static final BooleanGuacamoleProperty POSTGRESQL_AUTO_CREATE_ACCOUNTS =
+            new BooleanGuacamoleProperty() {
+      
+        @Override
+        public String getName() { return "postgresql-auto-create-accounts"; }
+                
+    };
 
 }

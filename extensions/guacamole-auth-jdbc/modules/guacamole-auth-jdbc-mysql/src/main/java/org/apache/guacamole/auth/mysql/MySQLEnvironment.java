@@ -276,5 +276,11 @@ public class MySQLEnvironment extends JDBCEnvironment {
         }
 
     }
+    
+    @Override
+    public boolean autoCreateAbsentAccounts() throws GuacamoleException {
+        return getProperty(MySQLGuacamoleProperties.MYSQL_AUTO_CREATE_ACCOUNTS,
+                false);
+    }
 
 }

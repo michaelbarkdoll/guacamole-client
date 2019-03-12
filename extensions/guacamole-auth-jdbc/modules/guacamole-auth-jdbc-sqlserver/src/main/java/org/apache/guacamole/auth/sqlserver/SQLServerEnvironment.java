@@ -256,5 +256,11 @@ public class SQLServerEnvironment extends JDBCEnvironment {
     public boolean isRecursiveQuerySupported(SqlSession session) {
         return true; // All versions of SQL Server support recursive queries through CTEs
     }
+    
+    @Override
+    public boolean autoCreateAbsentAccounts() throws GuacamoleException {
+        return getProperty(SQLServerGuacamoleProperties.SQLSERVER_AUTO_CREATE_ACCOUNTS,
+                false);
+    }
 
 }
