@@ -515,7 +515,7 @@ angular.module('client').factory('ManagedClient', ['$rootScope', '$injector',
         };
         
         // Handle any received prompts
-        client.onprompt = function onprompt(parameter) {
+        client.onrequired = function onrequired(parameter) {
             
             var dataSource = clientIdentifier.dataSource;
             var identifier = clientIdentifier.id;
