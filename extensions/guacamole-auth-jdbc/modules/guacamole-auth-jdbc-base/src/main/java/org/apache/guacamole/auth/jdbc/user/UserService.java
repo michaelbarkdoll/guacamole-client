@@ -34,6 +34,7 @@ import org.apache.guacamole.GuacamoleClientException;
 import org.apache.guacamole.GuacamoleException;
 import org.apache.guacamole.GuacamoleSecurityException;
 import org.apache.guacamole.GuacamoleUnsupportedException;
+import org.apache.guacamole.auth.jdbc.JDBCEnvironment;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordModel;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSearchTerm;
 import org.apache.guacamole.auth.jdbc.base.ActivityRecordSortPredicate;
@@ -155,6 +156,12 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
      */
     @Inject
     private PasswordPolicyService passwordPolicyService;
+    
+    /**
+     * The current JDBC environment for this module.
+     */
+    @Inject
+    private JDBCEnvironment environment;
 
     @Override
     protected ModeledDirectoryObjectMapper<UserModel> getObjectMapper() {
@@ -392,8 +399,12 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
      *     The AuthenticatedUser to retrieve the corresponding ModeledUser of.
      *
      * @return
-     *     The ModeledUser which corresponds to the given AuthenticatedUser, or
-     *     null if no such user exists.
+     *     The ModeledUser which corresponds to the given AuthenticatedUser, if
+     *     the user exists in the database.  If the user does not exist, and
+     *     the module has been configured to require JDBC authentication via
+     *     a "[db]-user-required" parameter, null will be returned.  Otherwise
+     *     an empty user matching the username of the authenticated user will
+     *     be provided.
      *
      * @throws GuacamoleException
      *     If a ModeledUser object for the user corresponding to the given
@@ -415,6 +426,8 @@ public class UserService extends ModeledDirectoryObjectService<ModeledUser, User
         // If no user exists, create a temporary one to map
         // the authenticated user.
         if (userModel == null) {
+            if (environment.isUserRequired())
+                return null;
             userModel = new UserModel();
             userModel.setIdentifier(username);
         }
