@@ -50,6 +50,7 @@ RUN apt get update && apt-get install git -y
 WORKDIR /root/directory-ldap-api
 RUN mvn clean install -DskipTests
 RUN pwd
+RUN pwd
 
 # Run the build itself
 RUN /opt/guacamole/bin/build-guacamole.sh "$BUILD_DIR" /opt/guacamole "$BUILD_PROFILE"
