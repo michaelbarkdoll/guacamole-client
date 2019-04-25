@@ -46,10 +46,9 @@ COPY . "$BUILD_DIR"
 
 # Update to org.apache.directory.api.api-all 2.0.0.AM3-SNAPSHOT for more debug info
 WORKDIR /root
-RUN apt get update && apt-get install git -y
+RUN apt-get update && apt-get install git -y
 WORKDIR /root/directory-ldap-api
 RUN mvn clean install -DskipTests
-RUN pwd
 RUN pwd
 
 # Run the build itself
