@@ -65,6 +65,8 @@ WORKDIR /opt/guacamole
 COPY --from=builder /opt/guacamole/ .
 
 COPY server.xml /usr/local/tomcat/conf/server.xml
+# Copy in debugging information
+COPY setenv.sh /usr/local/tomcat/bin/
 
 # Start Guacamole under Tomcat, listening on 0.0.0.0:8080
 EXPOSE 8080
