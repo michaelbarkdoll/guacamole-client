@@ -45,27 +45,36 @@ COPY guacamole-docker/bin/ /opt/guacamole/bin/
 COPY . "$BUILD_DIR"
 
 # Update to org.apache.directory.api.api-all 2.0.0.AM3-SNAPSHOT for more debug info
-WORKDIR /root
-RUN apt-get update && apt-get install git -y
-RUN git clone https://github.com/apache/directory-ldap-api.git
-WORKDIR /root/directory-ldap-api
-RUN mvn clean install -DskipTests
+#WORKDIR /root
+#RUN apt-get update && apt-get install git -y
+#RUN git clone https://github.com/apache/directory-ldap-api.git
+#WORKDIR /root/directory-ldap-api
+#RUN mvn clean install -DskipTests
 
 # Run the build itself
-RUN /opt/guacamole/bin/build-guacamole.sh "$BUILD_DIR" /opt/guacamole "$BUILD_PROFILE"
+#RUN /opt/guacamole/bin/build-guacamole.sh "$BUILD_DIR" /opt/guacamole "$BUILD_PROFILE"
+
+# Build custom tomcat app
+WORKDIR /tmp/guacamole-docker-BUILD/doc/guacamole-example
+RUN mvn package
 
 # For the runtime image, we start with the official Tomcat distribution
 FROM tomcat:${TOMCAT_VERSION}-${TOMCAT_JRE}
 
 # This is where the build artifacts go in the runtime image
-WORKDIR /opt/guacamole
+#WORKDIR /opt/guacamole
+WORKDIR /usr/local/tomcat/webapps/
 
 # Copy artifacts from builder image into this image
-COPY --from=builder /opt/guacamole/ .
+#COPY --from=builder /opt/guacamole/ .
 
-COPY server.xml /usr/local/tomcat/conf/server.xml
+COPY --from=builder /tmp/guacamole-docker-BUILD/doc/guacamole-example/target/guacamole-example-1.1.0.war .
+
+#  vi ~/custom-tomcat/guacamole-client/doc/guacamoleexample/src/main/java/org/apache/guacamole/net/example/DummyGuacamoleTunnelServlet.java
+
+#COPY server.xml /usr/local/tomcat/conf/server.xml
 
 # Start Guacamole under Tomcat, listening on 0.0.0.0:8080
 EXPOSE 8080
-CMD ["/opt/guacamole/bin/start.sh" ]
+# CMD ["/opt/guacamole/bin/start.sh" ]
 
