@@ -4,7 +4,7 @@
     
     "APP" : {
 
-        "NAME"    : "Apache Guacamole",
+        "NAME"    : "SIU CS Dept VDI",
         "VERSION" : "${project.version}",
 
         "ACTION_ACKNOWLEDGE"        : "OK",
