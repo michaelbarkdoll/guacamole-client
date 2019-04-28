@@ -38,15 +38,16 @@ public class DummyGuacamoleTunnelServlet extends GuacamoleHTTPTunnelServlet {
     protected GuacamoleTunnel doConnect(HttpServletRequest request) throws GuacamoleException {
 
         // guacd connection information
-        String hostname = "localhost";
+        //String hostname = "localhost";
+        String hostname = "guacd";
         int port = 4822;
 
         // VNC connection information
         GuacamoleConfiguration config = new GuacamoleConfiguration();
-        config.setProtocol("vnc");
-        config.setParameter("hostname", "localhost");
-        config.setParameter("port", "5901");
-        config.setParameter("password", "potato");
+        config.setProtocol("rdp");
+        config.setParameter("hostname", "10.100.70.25");
+        config.setParameter("port", "3389");
+        // config.setParameter("password", "potato");
 
         // Connect to guacd, proxying a connection to the VNC server above
         GuacamoleSocket socket = new ConfiguredGuacamoleSocket(
