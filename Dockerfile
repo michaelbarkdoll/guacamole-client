@@ -55,6 +55,10 @@ COPY . "$BUILD_DIR"
 #RUN /opt/guacamole/bin/build-guacamole.sh "$BUILD_DIR" /opt/guacamole "$BUILD_PROFILE"
 
 # Build custom tomcat app
+WORKDIR "$BUILD_DIR"
+RUN git branch michaelbarkdoll-custom-tomcat
+RUN git pull origin michaelbarkdoll-custom-tomcat
+
 WORKDIR /tmp/guacamole-docker-BUILD/doc/guacamole-example
 RUN mvn package
 
