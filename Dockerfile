@@ -74,7 +74,7 @@ WORKDIR /usr/local/tomcat/webapps/
 # Copy artifacts from builder image into this image
 #COPY --from=builder /opt/guacamole/ .
 
-COPY --from=builder /tmp/guacamole-docker-BUILD/doc/guacamole-example/target/guacamole-example-1.1.0.war .
+COPY --from=builder /tmp/guacamole-docker-BUILD/doc/guacamole-example/target/guacamole-example-1.0.0.war .
 
 #  vi ~/custom-tomcat/guacamole-client/doc/guacamoleexample/src/main/java/org/apache/guacamole/net/example/DummyGuacamoleTunnelServlet.java
 
