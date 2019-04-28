@@ -41,7 +41,7 @@ ENV \
 # Add configuration scripts
 COPY guacamole-docker/bin/ /opt/guacamole/bin/
 
-RUN cat ./doc/guacamole-example/pom.xml
+# RUN cat ./doc/guacamole-example/pom.xml
 # Copy source to container for sake of build
 COPY . "$BUILD_DIR"
 
