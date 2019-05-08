@@ -169,14 +169,6 @@
                remoteIpProxiesHeader="x-forwarded-by"
                protocolHeader="x-forwarded-proto" />
         -->
-        <-- internalProxies By default, 10/8, 192.168/16, 169.254/16, 127/8, 172.16/12, and ::1 are allowed. 
-        <Valve className="org.apache.catalina.valves.RemoteIpValve"
-               internalProxies="10\.0\.[60-70]\.[1-255]"
-               remoteIpHeader="x-forwarded-for"
-               proxiesHeader="x-forwarded-by"
-               trustedProxies="guacamole|gacamole2"
-               protocolHeader="x-forwarded-proto" />    
-            -->
         <Valve className="org.apache.catalina.valves.RemoteIpValve"
                internalProxies="10\.\d{1,3}\.\d{1,3}\.\d{1,3}"
                remoteIpHeader="x-forwarded-for"
