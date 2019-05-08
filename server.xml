@@ -173,7 +173,7 @@
                internalProxies="10\.\d{1,3}\.\d{1,3}\.\d{1,3}"
                remoteIpHeader="x-forwarded-for"
                proxiesHeader="x-forwarded-by"
-               trustedProxies="guacamole|gacamole2"
+               trustedProxies="nginx"
                protocolHeader="x-forwarded-proto" />
 
       </Host>
