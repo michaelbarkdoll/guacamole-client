@@ -172,7 +172,8 @@
         <Valve className="org.apache.catalina.valves.RemoteIpValve"
                internalProxies="10\.0\.[60-70]\.[1-255]"
                remoteIpHeader="x-forwarded-for"
-               remoteIpProxiesHeader="x-forwarded-by"
+               proxiesHeader="x-forwarded-by"
+               trustedProxies="guacamole|gacamole2"
                protocolHeader="x-forwarded-proto" />
 
       </Host>
