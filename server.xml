@@ -162,8 +162,15 @@
                prefix="localhost_access_log" suffix=".txt"
                pattern="%h %l %u %t &quot;%r&quot; %s %b" />
 
+        <!--  Old attempt
         <Valve className="org.apache.catalina.valves.RemoteIpValve"
                internalProxies="nginx"
+               remoteIpHeader="x-forwarded-for"
+               remoteIpProxiesHeader="x-forwarded-by"
+               protocolHeader="x-forwarded-proto" />
+        -->
+        <Valve className="org.apache.catalina.valves.RemoteIpValve"
+               internalProxies="10\.0\.[60-70]\.[1-255]"
                remoteIpHeader="x-forwarded-for"
                remoteIpProxiesHeader="x-forwarded-by"
                protocolHeader="x-forwarded-proto" />
