@@ -583,7 +583,8 @@ start_guacamole() {
     # Enable remote debugging
     JPDA_OPTS="-agentlib:jdwp=transport=dt_socket,address=8888,server=y,suspend=n"
     
-    exec catalina.sh jpda run
+    #exec catalina.sh jpda run
+    exec env JPDA_OPTS="-agentlib:jdwp=transport=dt_socket,address=8888,server=y,suspend=n" catalina.sh jpda run
 
 }
 
