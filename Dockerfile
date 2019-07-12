@@ -66,6 +66,6 @@ COPY --from=builder /opt/guacamole/ .
 COPY server.xml /usr/local/tomcat/conf/server.xml
 
 # Start Guacamole under Tomcat, listening on 0.0.0.0:8080
-EXPOSE 8080
+EXPOSE 8080 8888
 CMD ["/opt/guacamole/bin/start.sh" ]
 
