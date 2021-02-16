@@ -49,8 +49,8 @@ WORKDIR /root
 RUN apt-get update && apt-get install git -y
 RUN git clone https://github.com/apache/directory-ldap-api.git
 WORKDIR /root/directory-ldap-api
-RUN mvn clean install -DskipTests
-RUN pwd
+RUN mvn clean install -DskipTests -Drat.skip=true
+#RUN pwd
 
 # Run the build itself
 RUN /opt/guacamole/bin/build-guacamole.sh "$BUILD_DIR" /opt/guacamole "$BUILD_PROFILE"
